@@ -1,0 +1,22 @@
+[
+  {
+    "relation": [
+      "delegate_permission/common.handle_all_urls",
+      "delegate_permission/common.get_login_creds"
+    ],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "uz.alien.dictup",
+      "sha256_cert_fingerprints": [
+        "F5:70:5F:81:27:1D:FE:DD:D7:6C:6D:61:04:12:4F:9D:7B:C6:20:75:D5:21:14:42:7D:8B:47:C4:10:84:A8:D9",
+        "C5:8F:D6:FA:5B:7A:F5:6A:83:58:B0:80:91:78:A0:B6:C2:38:35:B6:B4:A9:5C:C5:7B:6E:00:AE:31:74:55:60",
+        "6A:0D:7C:EB:3F:47:97:F8:D7:49:2D:DC:DE:FE:F5:11:48:E5:7F:EC:79:C4:C0:75:D3:1E:BB:B6:6F:37:B7:27",
+        "7D:21:04:A9:63:FC:12:0B:71:B2:A4:B4:17:E9:E4:E1:36:B5:8D:25:C3:9C:BD:34:8C:15:90:D6:FC:17:86:69",
+        "B5:9D:EC:BE:1B:0A:E3:39:72:7F:F6:E1:A2:92:BE:1B:68:47:C3:69:30:06:A4:8B:50:08:2C:3B:8F:84:76:67",
+        "A2:99:51:34:0E:C7:21:0D:BF:9D:25:E6:F0:67:D4:24:21:AE:7F:B9:D9:34:EF:79:96:16:9B:D7:D4:5D:14:AA",
+        "FC:79:F8:5E:CF:01:FF:1B:39:FE:92:46:42:F5:8E:A5:51:71:D9:52:95:54:9D:3E:73:10:34:56:26:B6:E9:BC",
+        "F1:BB:F4:09:93:BB:69:80:68:A9:C6:3E:AE:94:CE:7C:63:A3:CA:FF:95:2F:1C:2D:B1:76:90:2B:07:80:28:C7"
+      ]
+    }
+  }
+]

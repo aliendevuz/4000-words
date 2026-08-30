@@ -1,0 +1,66 @@
+@import "tailwindcss";
+
+/* Light/dark tizim sozlamasiga qarab tanlanadi. */
+@custom-variant dark (&:where(.dark, .dark *), @media (prefers-color-scheme: dark));
+
+/*
+ * Ranglar Android ilovaning logotipidan olingan:
+ * android/app/src/main/res/values/colors.xml
+ *   logo_background #03C03C  — logoning yashil foni (brend rangi)
+ *   logo            #E1FFE8  — logodagi "W" harfi
+ *   ic_words_splashscreen_background #29C258 — splash ekran yashili
+ */
+@theme {
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+
+  --color-brand: #03c03c;
+  --color-brand-dark: #029a30;
+  --color-brand-light: #29c258;
+  --color-brand-tint: #e1ffe8;
+}
+
+:root {
+  color-scheme: light dark;
+
+  --app-background: #ffffff;
+  --app-surface: var(--color-brand-tint);
+  --app-text: #0b2e17;
+  --app-text-soft: #3f6b4d;
+  --app-border: #bfe6cc;
+
+  /* Telegram Mini App ichida haqiqiy balandlik shu yerga yoziladi. */
+  --tg-viewport-stable-height: 100dvh;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    /* Ilovaning tungi foni: values-night/colors.xml → main_background */
+    --app-background: #2f3645;
+    --app-surface: #3d4659;
+    --app-text: #ffffff;
+    --app-text-soft: #ccd1e4;
+    --app-border: #647599;
+  }
+}
+
+/* Telegram o'z temasini bergan bo'lsa, shu klass ustunlik qiladi. */
+.dark {
+  --app-background: #2f3645;
+  --app-surface: #3d4659;
+  --app-text: #ffffff;
+  --app-text-soft: #ccd1e4;
+  --app-border: #647599;
+}
+
+html {
+  -webkit-tap-highlight-color: transparent;
+}
+
+body {
+  background-color: var(--app-background);
+  color: var(--app-text);
+}
+
+body[data-telegram="true"] {
+  min-height: var(--tg-viewport-stable-height);
+}
