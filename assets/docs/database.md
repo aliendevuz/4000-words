@@ -64,6 +64,7 @@ chapters:
 - description: str
 - course_id: int (FK -> courses.id)
 - order: int
+- background_color: str | null # "#RRGGBB" - muqova rasmi shaffof, shu rang orqasiga fon sifatida chiziladi
 
 units:
 - id: int (PK)

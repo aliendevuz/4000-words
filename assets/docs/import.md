@@ -94,6 +94,24 @@ for part in manifest.parts:
     local_hash[part.path] = part.sha256                  # sinxronlashni belgilash
 ```
 
-## 7. Rasmlar (`word_pictures.path`)
+## 7. Rasmlar — to'g'ridan-to'g'ri URL (zip/bundle YO'Q)
 
-`.data` fayllarda faqat **yo'l** (`storage/pictures/0-0-0.jpg`) saqlanadi, rasmning o'zi emas — rasm binary fayllari R2'dan eski usul bo'yicha (o'zgarmagan) alohida yuklanadi, shu `path`ni R2 base URL bilan birlashtirib oling.
+So'z rasmlari `.data` fayllarga **qo'shilmaydi** — `word_pictures` jadvalida faqat `id`, `word_type_id` bor (yo'l yo'q). Rasmning o'zi R2'da alohida-alohida, quyidagi konvensiya bilan yotadi:
+
+```
+{R2_PUBLIC_BASE}/pictures/{word_type_id}.jpg
+```
+
+`word_pictures` qatori mavjudligi — "shu `word_type`ning rasmi bor" degan signal, xolos; URL'ni client o'zi `word_type_id`dan quradi. Bitta unit/chapter'ni bundle/zip qilib yuklash **ataylab qo'llanilmadi** — buning o'rniga har bir rasm alohida, standart HTTP orqali, **Coil/Glide (Android) yoki shunga o'xshash rasm-yuklash kutubxonasi** bilan to'g'ridan-to'g'ri URL orqali olinadi. Sabab: bu kutubxonalar disk/xotira keshini, lazy-loading'ni (faqat ekranda ko'ringan rasm yuklanadi) va xato holatlarini o'zi avtomatik boshqaradi — bundle qilinsa bu imkoniyatlar qo'lda qayta yozilishi kerak bo'lardi.
+
+## 8. Bob muqovasi va fon rangi (`chapters.background_color`)
+
+Bob (chapter) muqova rasmlari **shaffof** (PNG, RGBA) — orqasiga alohida fon rangi kerak. Bu rang endi `chapters.background_color` ustunida, `"#RRGGBB"` formatida (masalan `#4CAF50`), `common.data`dagi `chapters` jadvalida keladi.
+
+Muqova rasmining o'zi (`chapter_pictures`) xuddi so'z rasmlari kabi R2'da alohida:
+
+```
+{R2_PUBLIC_BASE}/chapters/{chapter_id}.{ext}   # ext: png yoki jpg, manbaga qarab har xil
+```
+
+Client UI'da: avval `background_color`ni fon sifatida chizing, ustiga `chapters/{chapter_id}.{ext}` rasmni qo'ying (shaffof qismlardan fon rang ko'rinadi) — aynan eski Android ilovasidagi (`ivBackground.setBackgroundColor` + `setImageResource`) mantiqqa mos.

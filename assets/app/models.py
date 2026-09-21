@@ -124,6 +124,10 @@ class Chapter(Base):
     description: Mapped[str | None] = mapped_column(Text)
     course_id: Mapped[int] = mapped_column(ForeignKey("courses.id"))
     order: Mapped[int]
+    # muqova rasmi shaffof (PNG/RGBA) - shu rang orqasiga fon sifatida
+    # chiziladi (eski Android ilovasidagi colors.xml'dan olingan).
+    # "#RRGGBB" formatida.
+    background_color: Mapped[str | None]
 
 
 class Unit(Base):

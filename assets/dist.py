@@ -35,11 +35,17 @@ SCHEMA = {
         "replaced_by",
     ],
     "courses": ["id", "name", "description", "from_language", "to_language", "order"],
-    "chapters": ["id", "name", "description", "course_id", "order"],
+    "chapters": ["id", "name", "description", "course_id", "order", "background_color"],
     "units": ["id", "name", "description", "chapter_id", "order"],
     "unit_words": ["id", "unit_id", "word_type_id", "order"],
     "stories": ["id", "language_id", "unit_id", "title", "body"],
-    "word_pictures": ["id", "word_type_id", "path"],
+    # "path" ATAYLAB yo'q - bu server ichki (R2 xom manba) yo'li,
+    # clientga kerak emas. Rasmlar R2'da to'g'ridan-to'g'ri
+    # "pictures/{word_type_id}.jpg" konvensiyasi bilan alohida-alohida
+    # yotadi (up.py orqali yuklanadi) - client URL'ni o'zi quradi.
+    # Bu jadvalning distributsiyadagi yagona vazifasi - "shu
+    # word_type'ning rasmi bor" degan signal.
+    "word_pictures": ["id", "word_type_id"],
 }
 
 
@@ -153,6 +159,7 @@ def write_part(part: Part) -> dict:
         "sha256": sha,
         "raw_bytes": len(raw),
         "gz_bytes": len(gz),
+        "kind": "data",
     }
 
 
