@@ -41,6 +41,9 @@ const verboseLogs = process.env.UPLOAD_VERBOSE === "1";
 // yuklashni yiqitmasin uchun.
 const maxAttempts = Number(process.env.UPLOAD_RETRIES || 3);
 const retryBaseDelayMs = Number(process.env.UPLOAD_RETRY_DELAY_MS || 500);
+// mtime'i oxirgi muvaffaqiyatli yuklashdagi bilan bir xil fayllarni
+// o'tkazib yuborish o'rniga barchasini majburan qayta yuklash.
+const forceUpload = process.env.UPLOAD_FORCE === "1" || process.argv.includes("--force");
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 const root = join(__dirname, "..", "assets");
@@ -54,6 +57,11 @@ console.log(chalk.blue(`📦 Manbai: ${root}`));
 console.log(chalk.blue(`☁️  Maqsad: ${bucket} bucket`));
 console.log(chalk.blue(`⚡ Parallel upload: ${concurrency}`));
 console.log(chalk.blue(`🔁 Har bir so'rov uchun urinishlar: ${maxAttempts}`));
+console.log(
+  forceUpload
+    ? chalk.yellow("🔨 --force: barcha fayllar o'zgarganmi-yo'qmi tekshirilmasdan qayta yuklanadi")
+    : chalk.blue("⏩ O'zgarmagan fayllar avtomatik o'tkazib yuboriladi")
+);
 console.log(chalk.blue("-".repeat(60)));
 
 if (!existsSync(root)) {
@@ -112,6 +120,17 @@ async function withRetry(attempt, label) {
     }
   }
   throw lastErr;
+}
+
+/* --- Oxirgi muvaffaqiyatli yuklashda saqlangan mtime'ni o'qish ---
+   (fayl hali umuman yuklanmagan bo'lsa `null` qaytaradi — bu holda
+   albatta yuklanishi kerak). */
+function readPreviousMtime(file) {
+  const mtimeFilePath = join(versionDir, file);
+  if (!existsSync(mtimeFilePath)) {
+    return null;
+  }
+  return readFileSync(mtimeFilePath, "utf8").trim();
 }
 
 /* --- Calculate SHA-256 hash for a file --- */
@@ -370,6 +389,10 @@ function walk(dir) {
   // bo'lganini kuzatib boramiz, aks holda oxirida xato bo'lsa ham
   // "successfully" deb yolg'on chiqarib yuborardi.
   const failedFiles = new Set();
+  // mtime oxirgi yuklashdagi bilan bir xil bo'lgani uchun butunlay
+  // o'tkazib yuborilgan fayllar (--force yoki UPLOAD_FORCE=1 bo'lsa
+  // doim bo'sh qoladi).
+  const skippedFiles = new Set();
 
   async function processFile(file) {
     const fullPath = join(root, file);
@@ -383,6 +406,20 @@ function walk(dir) {
     const localStats = statSync(fullPath);
     const newMtime = localStats.mtimeMs.toString();
     const skipMetadata = isSkippedForMetadata(file);
+
+    // .ignore/.fignore'dagi fayllar uchun versiya kuzatilmaydi,
+    // shuning uchun ular uchun "o'zgarmadi" deb bila olmaymiz —
+    // xavfsizlik uchun ularni har doim qayta yuklaymiz.
+    if (!skipMetadata && !forceUpload) {
+      const previousMtime = readPreviousMtime(file);
+      if (previousMtime !== null && previousMtime === newMtime) {
+        skippedFiles.add(file);
+        if (verboseLogs) {
+          console.log(chalk.gray(`⏩ O'zgarmagan, o'tkazib yuborildi: ${file}`));
+        }
+        return;
+      }
+    }
 
     const fileUploaded = await uploadFile(file, fullPath);
     if (!fileUploaded) {
@@ -417,13 +454,22 @@ function walk(dir) {
 
   console.log(chalk.blue("-".repeat(60)));
 
+  const uploadedCount = localFiles.length - failedFiles.size - skippedFiles.size;
+  if (skippedFiles.size > 0) {
+    console.log(chalk.gray(`⏩ ${skippedFiles.size} ta fayl o'zgarmagani uchun o'tkazib yuborildi (--force bilan majburlash mumkin)`));
+  }
+
   if (failedFiles.size === 0) {
-    console.log(chalk.green.bold(`✔️  Upload completed successfully! (${localFiles.length}/${localFiles.length} fayl)`));
+    console.log(
+      chalk.green.bold(
+        `✔️  Upload completed successfully! (${uploadedCount} yuklandi, ${skippedFiles.size} o'tkazib yuborildi, jami ${localFiles.length} fayl)`
+      )
+    );
   } else {
     const failedList = [...failedFiles];
     console.log(
       chalk.red.bold(
-        `⚠️  Upload ${failedFiles.size} ta xato bilan tugadi (${localFiles.length - failedFiles.size}/${localFiles.length} muvaffaqiyatli).`
+        `⚠️  Upload ${failedFiles.size} ta xato bilan tugadi (${uploadedCount} yuklandi, ${skippedFiles.size} o'tkazib yuborildi, ${failedFiles.size} xato — jami ${localFiles.length}).`
       )
     );
     console.log(chalk.red("Muvaffaqiyatsiz fayllar:"));
