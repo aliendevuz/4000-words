@@ -1,0 +1,8 @@
+.venv
+.vscode
+storage
+__pycache__
+
+dictionary.db
+backups
+.env

@@ -1,0 +1,83 @@
+@host = http://localhost:8001
+
+### Tillar ro'yxati
+GET {{host}}/languages
+
+### === words: qidirish ===
+
+### Matn boshlanishi bo'yicha qidirish (en)
+GET {{host}}/words?q=about&language=en
+
+### Faqat uz so'zlar orasidan qidirish
+GET {{host}}/words?q=hayd&language=uz
+
+### Til filtrisiz qidirish (en+uz aralash)
+GET {{host}}/words?q=day
+
+### Sahifalash (limit/offset)
+GET {{host}}/words?limit=5&offset=10
+
+### limit maksimal chegaradan oshsa (422 kutiladi, le=200)
+GET {{host}}/words?limit=500
+
+### === words: id bo'yicha ===
+
+### en so'z (ta'rif + misol + uz tarjima bilan)
+GET {{host}}/words/1
+
+### uz so'z (tarjimasi bo'sh, chunki bu allaqachon "to" tomon)
+GET {{host}}/words/5190
+
+### bir nechta turga ega so'z (masalan "update" - noun/verb)
+GET {{host}}/words?q=update&language=en
+
+### mavjud bo'lmagan so'z (404 kutiladi)
+GET {{host}}/words/999999
+
+### === courses / chapters / units ===
+
+### Kurslar ro'yxati (Beginner, Essential)
+GET {{host}}/courses
+
+### Beginner kursining boblari
+GET {{host}}/courses/1/chapters
+
+### Essential kursining boblari
+GET {{host}}/courses/2/chapters
+
+### Bobning unitlari
+GET {{host}}/chapters/1/units
+
+### Unit ichidagi so'zlar (dars mazmuni)
+GET {{host}}/units/1/words
+
+### mavjud bo'lmagan unit (bo'sh ro'yxat kutiladi, 404 emas)
+GET {{host}}/units/999999/words
+
+### === stories ===
+
+### Hikoyalar ro'yxati
+GET {{host}}/stories?limit=5
+
+### Bitta hikoya
+GET {{host}}/stories/1
+
+### mavjud bo'lmagan hikoya (404 kutiladi)
+GET {{host}}/stories/999999
+
+### === get_vocab: 0-based indeks bo'yicha to'liq vocab yozuvi (0..5199) ===
+
+### birinchi yozuv
+GET {{host}}/get_vocab?id=1600
+
+### oxirgi yozuv (jami 5200 ta, 0..5199)
+GET {{host}}/get_vocab?id=5199
+
+### o'rtadagi bir yozuv
+GET {{host}}/get_vocab?id=2500
+
+### chegaradan tashqari (404 kutiladi)
+GET {{host}}/get_vocab?id=5200
+
+### manfiy id (422 kutiladi)
+GET {{host}}/get_vocab?id=-1
