@@ -150,6 +150,9 @@ class Story(Base):
 
     id: Mapped[int] = mapped_column(primary_key=True)
     language_id: Mapped[int] = mapped_column(ForeignKey("languages.id"))
+    # hikoya qaysi unit so'zlari asosida yozilgan (beginner'da hikoya
+    # yo'q, shuning uchun nullable).
+    unit_id: Mapped[int | None] = mapped_column(ForeignKey("units.id"))
     title: Mapped[str]
     body: Mapped[str] = mapped_column(Text)
 

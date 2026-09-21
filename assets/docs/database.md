@@ -86,6 +86,7 @@ used_words:
 stories:
 - id: int
 - language_id: int (FK -> languages.id)
+- unit_id: int | null (FK -> units.id) # hikoya shu unit so'zlari asosida yozilgan
 - title: str
 - body: text
 

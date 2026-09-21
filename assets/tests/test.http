@@ -6,7 +6,7 @@ GET {{host}}/languages
 ### === words: qidirish ===
 
 ### Matn boshlanishi bo'yicha qidirish (en)
-GET {{host}}/words?q=about&language=en
+GET {{host}}/words?q=ecology&language=en
 
 ### Faqat uz so'zlar orasidan qidirish
 GET {{host}}/words?q=hayd&language=uz
@@ -68,7 +68,7 @@ GET {{host}}/stories/999999
 ### === get_vocab: 0-based indeks bo'yicha to'liq vocab yozuvi (0..5199) ===
 
 ### birinchi yozuv
-GET {{host}}/get_vocab?id=1600
+GET {{host}}/get_vocab?id=4128
 
 ### oxirgi yozuv (jami 5200 ta, 0..5199)
 GET {{host}}/get_vocab?id=5199

@@ -1,8 +1,9 @@
 .venv
 .vscode
-storage
 __pycache__
+storage
+dist
+backups
 
 dictionary.db
-backups
 .env
